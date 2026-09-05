@@ -1,0 +1,16 @@
+body {
+    background: #f5f7fb;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+}
+
+.stat-card {
+    padding: 20px;
+}
+
+.stat-card h2 {
+    margin-top: 10px;
+}

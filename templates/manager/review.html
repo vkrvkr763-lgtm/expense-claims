@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h2>Review Claim #{{ claim.id }}</h2>
+
+        <p class="text-muted">
+            Review this expense claim.
+        </p>
+    </div>
+
+    <a
+        href="{{ url_for('manager_dashboard') }}"
+        class="btn btn-secondary">
+
+        ← Back
+
+    </a>
+
+</div>
+
+
+{% if error %}
+
+<div class="alert alert-danger">
+    {{ error }}
+</div>
+
+{% endif %}
+
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <p>
+                    <strong>Employee:</strong>
+                    {{ employee.name }}
+                </p>
+
+                <p>
+                    <strong>Email:</strong>
+                    {{ employee.email }}
+                </p>
+
+                <p>
+                    <strong>Merchant:</strong>
+                    {{ claim.merchant }}
+                </p>
+
+                <p>
+                    <strong>Amount:</strong>
+                    ₹{{ "%.2f"|format(claim.amount|float) }}
+                </p>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <p>
+                    <strong>Date:</strong>
+                    {{ claim.expense_date }}
+                </p>
+
+                <p>
+                    <strong>Category:</strong>
+                    {{ claim.category }}
+                </p>
+
+                <p>
+                    <strong>Description:</strong>
+                    {{ claim.description }}
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+
+                    {% if claim.status == "pending" %}
+
+                    <span class="badge bg-warning">
+                        Pending
+                    </span>
+
+                    {% elif claim.status == "approved" %}
+
+                    <span class="badge bg-success">
+                        Approved
+                    </span>
+
+                    {% elif claim.status == "rejected" %}
+
+                    <span class="badge bg-danger">
+                        Rejected
+                    </span>
+
+                    {% elif claim.status == "paid" %}
+
+                    <span class="badge bg-primary">
+                        Paid
+                    </span>
+
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% if claim.duplicate_warning %}
+
+        <div class="alert alert-warning mt-3">
+
+            ⚠️ <strong>Possible Duplicate</strong>
+
+            <br>
+
+            Duplicate score:
+            {{ claim.duplicate_score }}%
+
+            <br>
+
+            Please verify this claim before approving.
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- APPROVAL BUTTONS -->
+
+        {% if claim.status == "pending" %}
+
+        <hr>
+
+        <h5 class="mb-3">
+            Manager Decision
+        </h5>
+
+        <form method="POST">
+
+            <button
+                type="submit"
+                name="action"
+                value="approve"
+                class="btn btn-success me-2">
+
+                ✓ Approve
+
+            </button>
+
+
+            <button
+                type="submit"
+                name="action"
+                value="reject"
+                class="btn btn-danger">
+
+                ✕ Reject
+
+            </button>
+
+        </form>
+
+        {% else %}
+
+        <hr>
+
+        <div class="alert alert-info">
+
+            This claim has already been
+            <strong>{{ claim.status }}</strong>.
+
+        </div>
+
+        {% endif %}
+
+
+        <div class="mt-4">
+
+            <a
+                href="{{ url_for('manager_dashboard') }}">
+
+                ← Back to Manager Dashboard
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

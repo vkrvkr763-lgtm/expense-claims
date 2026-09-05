@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center">
+
+    <div>
+
+        <h2>Manager Dashboard</h2>
+
+        <p class="text-muted">
+            Review your team's expense claims.
+        </p>
+
+    </div>
+
+
+    <a
+        href="{{ url_for('claim.create_claim') }}"
+        class="btn btn-dark">
+
+        + My Expense Claim
+
+    </a>
+
+</div>
+
+
+<!-- Team -->
+
+<div class="card shadow-sm mt-4">
+
+    <div class="card-body">
+
+        <h5>My Team</h5>
+
+        <div class="row mt-3">
+
+            {% for person in team %}
+
+            <div class="col-md-4">
+
+                <div class="border rounded p-3">
+
+                    <strong>
+                        {{ person.name }}
+                    </strong>
+
+                    <br>
+
+                    <small class="text-muted">
+                        {{ person.email }}
+                    </small>
+
+                </div>
+
+            </div>
+
+            {% else %}
+
+            <p class="text-muted">
+                No team members assigned.
+            </p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Claims -->
+
+<div class="card shadow-sm mt-4">
+
+    <div class="card-body">
+
+        <h5>
+            Team Claims
+        </h5>
+
+
+        {% if claims %}
+
+        <div class="table-responsive mt-3">
+
+            <table class="table align-middle">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Employee</th>
+                        <th>Merchant</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Duplicate</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for claim in claims %}
+
+                    <tr>
+
+                        <td>
+                            #{{ claim.id }}
+                        </td>
+
+                        <td>
+                            {{ claim.employee_name }}
+                        </td>
+
+                        <td>
+                            {{ claim.merchant }}
+                        </td>
+
+                        <td>
+                            {{ claim.category }}
+                        </td>
+
+                        <td>
+                            ₹{{ "%.2f"|format(claim.amount|float) }}
+                        </td>
+
+                        <td>
+                            {{ claim.expense_date }}
+                        </td>
+
+                        <td>
+
+                            {% if claim.status == "pending" %}
+
+                            <span class="badge bg-warning">
+                                Pending
+                            </span>
+
+                            {% elif claim.status == "approved" %}
+
+                            <span class="badge bg-success">
+                                Approved
+                            </span>
+
+                            {% elif claim.status == "rejected" %}
+
+                            <span class="badge bg-danger">
+                                Rejected
+                            </span>
+
+                            {% elif claim.status == "paid" %}
+
+                            <span class="badge bg-primary">
+                                Paid
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if claim.duplicate_warning %}
+
+                            <span class="badge bg-danger">
+                                Possible Duplicate
+                            </span>
+
+                            {% else %}
+
+                            <span class="text-muted">
+                                No
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if claim.status == "pending" %}
+
+                            <a
+                                href="{{ url_for('manager.review', claim_id=claim.id) }}"
+                                class="btn btn-sm btn-dark">
+
+                                Review
+
+                            </a>
+
+                            {% else %}
+
+                            <a
+                                href="{{ url_for('manager.review', claim_id=claim.id) }}"
+                                class="btn btn-sm btn-outline-secondary">
+
+                                View
+
+                            </a>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="text-center py-4">
+
+            <h5>No team claims</h5>
+
+            <p class="text-muted">
+                Your team hasn't submitted any claims yet.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

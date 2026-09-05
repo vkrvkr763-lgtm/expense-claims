@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Review Claim #{{ claim.id }}</h2>
+
+{% if error %}
+
+<div class="alert alert-danger">
+    {{ error }}
+</div>
+
+{% endif %}
+
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <p>
+                    <strong>Merchant:</strong>
+                    {{ claim.merchant }}
+                </p>
+
+                <p>
+                    <strong>Amount:</strong>
+                    ₹{{ "%.2f"|format(claim.amount|float) }}
+                </p>
+
+                <p>
+                    <strong>Date:</strong>
+                    {{ claim.expense_date }}
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <p>
+                    <strong>Category:</strong>
+                    {{ claim.category }}
+                </p>
+
+                <p>
+                    <strong>Description:</strong>
+                    {{ claim.description }}
+                </p>
+
+                <p>
+                    <strong>Duplicate Score:</strong>
+                    {{ claim.duplicate_score or 0 }}%
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% if claim.duplicate_warning %}
+
+        <div class="alert alert-warning">
+
+            ⚠️ This claim looks similar to an existing claim.
+
+        </div>
+
+        {% endif %}
+
+
+        {% if claim.status == "pending" %}
+
+        <form method="POST">
+
+            <button
+                name="action"
+                value="approve"
+                class="btn btn-success">
+
+                Approve
+
+            </button>
+
+            <button
+                name="action"
+                value="reject"
+                class="btn btn-danger">
+
+                Reject
+
+            </button>
+
+        </form>
+
+        {% else %}
+
+        <div class="alert alert-info">
+
+            This claim is already
+            <strong>{{ claim.status }}</strong>.
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

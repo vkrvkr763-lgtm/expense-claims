@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center">
+
+    <div>
+
+        <h2>Monthly Spend Analytics</h2>
+
+        <p class="text-muted">
+            Current month expense overview.
+        </p>
+
+    </div>
+
+    <a
+        href="{{ url_for('finance_dashboard') }}"
+        class="btn btn-outline-dark">
+
+        ← Payments
+
+    </a>
+
+</div>
+
+
+<!-- Total -->
+
+<div class="card shadow-sm mt-4">
+
+    <div class="card-body">
+
+        <small class="text-muted">
+            Total Current Month Spend
+        </small>
+
+        <h1>
+            ₹{{ "%.2f"|format(total_spend) }}
+        </h1>
+
+    </div>
+
+</div>
+
+
+<div class="row mt-4 g-4">
+
+    <!-- Person -->
+
+    <div class="col-md-6">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <h5>
+                    Spend by Person
+                </h5>
+
+                <table class="table mt-3">
+
+                    <thead>
+
+                        <tr>
+                            <th>Person</th>
+                            <th>Spend</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for person, amount in by_person.items() %}
+
+                        <tr>
+
+                            <td>
+                                {{ person }}
+                            </td>
+
+                            <td>
+                                ₹{{ "%.2f"|format(amount) }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Category -->
+
+    <div class="col-md-6">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <h5>
+                    Spend by Category
+                </h5>
+
+                <table class="table mt-3">
+
+                    <thead>
+
+                        <tr>
+                            <th>Category</th>
+                            <th>Spend</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for category, amount in by_category.items() %}
+
+                        <tr>
+
+                            <td>
+                                {{ category }}
+                            </td>
+
+                            <td>
+                                ₹{{ "%.2f"|format(amount) }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Limits -->
+
+<div class="card shadow-sm mt-4">
+
+    <div class="card-body">
+
+        <h5>
+            Monthly Limits
+        </h5>
+
+        <div class="table-responsive">
+
+            <table class="table mt-3 align-middle">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Person</th>
+                        <th>Monthly Limit</th>
+                        <th>Spent</th>
+                        <th>Remaining</th>
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for item in limit_analysis %}
+
+                    <tr>
+
+                        <td>
+                            {{ item.name }}
+                        </td>
+
+                        <td>
+
+                            {% if item.monthly_limit is not none %}
+
+                            ₹{{ "%.2f"|format(item.monthly_limit) }}
+
+                            {% else %}
+
+                            No limit
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            ₹{{ "%.2f"|format(item.spent) }}
+                        </td>
+
+                        <td>
+
+                            {% if item.remaining is not none %}
+
+                            ₹{{ "%.2f"|format(item.remaining) }}
+
+                            {% else %}
+
+                            -
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if item.over_limit %}
+
+                            <span class="badge bg-danger">
+                                OVER LIMIT
+                            </span>
+
+                            {% else %}
+
+                            <span class="badge bg-success">
+                                Within Limit
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

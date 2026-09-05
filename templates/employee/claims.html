@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center">
+
+    <div>
+
+        <h2>My Claims</h2>
+
+        <p class="text-muted">
+            Track your submitted expenses.
+        </p>
+
+    </div>
+
+    <a
+        href="{{ url_for('claim.create_claim') }}"
+        class="btn btn-dark">
+
+        + New Claim
+
+    </a>
+
+</div>
+
+
+<div class="card shadow-sm mt-4">
+
+    <div class="card-body">
+
+        {% if claims %}
+
+        <div class="table-responsive">
+
+            <table class="table align-middle">
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Merchant</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Duplicate</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for claim in claims %}
+
+                    <tr>
+
+                        <td>#{{ claim.id }}</td>
+
+                        <td>{{ claim.merchant }}</td>
+
+                        <td>{{ claim.category }}</td>
+
+                        <td>
+                            ₹{{ "%.2f"|format(claim.amount|float) }}
+                        </td>
+
+                        <td>{{ claim.expense_date }}</td>
+
+                        <td>
+
+                            {% if claim.status == "pending" %}
+                                <span class="badge bg-warning">
+                                    Pending
+                                </span>
+
+                            {% elif claim.status == "approved" %}
+                                <span class="badge bg-success">
+                                    Approved
+                                </span>
+
+                            {% elif claim.status == "paid" %}
+                                <span class="badge bg-primary">
+                                    Paid
+                                </span>
+
+                            {% else %}
+                                <span class="badge bg-danger">
+                                    Rejected
+                                </span>
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if claim.duplicate_warning %}
+
+                            <span class="badge bg-danger">
+                                Possible Duplicate
+                            </span>
+
+                            {% else %}
+
+                            <span class="text-muted">
+                                No
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="text-center py-5">
+
+            <h5>No claims yet</h5>
+
+            <p class="text-muted">
+                Create your first expense claim.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

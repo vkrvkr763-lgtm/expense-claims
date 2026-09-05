@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center">
+
+    <div>
+
+        <h2>Finance Dashboard</h2>
+
+        <p class="text-muted">
+            Process approved expense claims and manage payments.
+        </p>
+
+    </div>
+
+
+    <a
+        href="{{ url_for('finance.analytics') }}"
+        class="btn btn-dark">
+
+        📊 Monthly Analytics
+
+    </a>
+
+</div>
+
+
+<div class="card shadow-sm mt-4">
+
+    <div class="card-body">
+
+        <h5>
+            Approved Claims Awaiting Payment
+        </h5>
+
+
+        {% if claims %}
+
+        <div class="table-responsive mt-3">
+
+            <table class="table align-middle">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Employee</th>
+                        <th>Merchant</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Duplicate</th>
+                        <th>Payment</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for claim in claims %}
+
+                    <tr>
+
+                        <td>
+                            #{{ claim.id }}
+                        </td>
+
+                        <td>
+                            {{ claim.employee_name }}
+                        </td>
+
+                        <td>
+                            {{ claim.merchant }}
+                        </td>
+
+                        <td>
+                            {{ claim.category }}
+                        </td>
+
+                        <td>
+                            ₹{{ "%.2f"|format(claim.amount|float) }}
+                        </td>
+
+                        <td>
+                            {{ claim.expense_date }}
+                        </td>
+
+                        <td>
+
+                            {% if claim.duplicate_warning %}
+
+                            <span class="badge bg-danger">
+                                Possible Duplicate
+                            </span>
+
+                            {% else %}
+
+                            <span class="text-muted">
+                                No
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for('finance.pay', claim_id=claim.id) }}">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-success btn-sm">
+
+                                    💳 Mark Paid
+
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="text-center py-5">
+
+            <h5>
+                No payments pending 🎉
+            </h5>
+
+            <p class="text-muted">
+                There are no approved claims waiting for payment.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
